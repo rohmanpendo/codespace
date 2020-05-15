@@ -18,7 +18,7 @@ class CreateSpacesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('title');
             $table->text('address');
-            $table->text('descrition');
+            $table->text('description');
             $table->string('latitude');
             $table->string('longitude');
             $table->timestamps();
