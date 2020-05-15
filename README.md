@@ -1,79 +1,95 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+## Cara membuat local domain dan mengaktifkan https localhost XAMPP di windows 10
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+- Buka folder instalan xampp biasanya di drive C:\ atau disesuaikan dengan direktori pada saat menginstal
+- Buka folder apache di ```C:\xampp\apache```. 
+- Buat file baru ```https.txt``` kemudian edit lewat text editor anda salin kode berikut :
+  ```
+  authorityKeyIdentifier=keyid,issuer 
+  basicConstraints=CA:FALSE 
+  keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment 
+  subjectAltName = @alt_names 
 
-## About Laravel
+  [alt_names] 
+  DNS.1 = localhost
+  DNS.1 = codespace.test
+  ```
+  Perhatikan DNS.1 = localhost ini bisa anda edit atau tambah jika ada DNS yang diinginkan menggunakan protokol https. sebagai contoh:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+  ```
+  [alt_names] 
+  DNS.1 = localhost
+  DNS.2 = produk.test
+  DNS.3 = wordpress.com
+  DNS.4 = perpustakaan.dev
+  DNS.5 = coba.test
+  ```
+  Lalu di save.
+- Kemudian rename file tersebut menjadi ```https.ext```
+- Selanjutnya masih di direktori yang sama buka file ```makecert.bat``` kedalam text editor anda bisa notepad, sublime text, vscode dll.  jika tidak bisa dibuka, coba ubah file nya menjadi format ```.txt``` . lalu cari kode yang semula nya:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+  ```
+  bin\openssl x509 -in server.csr -out server.crt -req -signkey server.key -days 365
+  ```
+  Ubah kode nya menjadi seperti ini :
+  ```
+  bin\openssl x509 -in server.csr -out server.crt -req -signkey server.key -days 500 -sha256 -extfile https.ext
+  ```
+  Lalu di save.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Setelah itu buka cmd bisa menggunakan perintah windows + R dan ketikkan cmd lalu enter. setelah itu ketikkan:
+  ```
+  cd C:\xampp\apache
+  makecert
+  ```
+  Ikuti perintah seperti dibawah ini :
+  ```
+  Enter PEM pass phrase : 12345678
+  Verifying – Enter PEM pass phrase: 12345678
+  Country Name (2 letter code) [AU]:ID
+  State or Province Name (full name) [Some-State]: Jakarta
+  Locality Name (eg, city) []: Jakarta
+  Organization Name (eg, company) [Internet Widgits Pty Ltd]: Web Dev
+  Organizational Unit Name (eg, section) []:laravel
+  Common Name (e.g. server FQDN or YOUR name) []:localhost
+  Email Address []:example@mail.com
+  A challenge password []:
+  An optional company name []:localhost
+  Enter pass phrase for privkey.pem:12345678
+  ```
+  Jika mengikuti perintah diatas maka akan menampilkan ```Press any key to continue . . .``` di akhir. Berarti penginstalan ssl sudah berhasil. 
+- Selanjutnya buka ```Manage user certificates``` di search windows atau bisa menggunakan perintah windows + R dan ketikkan ```certmgr.msc``` lalu enter. 
+- Kemudian pilih ```Trusted Root Certification Authorities``` lalu klik kanan Certificates > All Tasks > Import… lalu klik next
+- Kemudian klik tombol browse cari file ```server.crt``` di direktory ```C:\xampp\apache\conf\ssl.crt\server.crt``` klik next
+- Pilih all certificates in the following store kemudian isikan ```Trusted Root Certification Authorities``` lalu next > finish.
+  Jika anda ingin merubah domain project framework laravel yang menggunakan ip ```127.0.0.1``` . anda bisa mengubah nya dengan membuka file ```hosts``` di direktori ```C:\Windows\System32\drivers\etc``` . lalu tambahkan ini di bawah didalam file hosts :
+  ```
+  127.0.0.1         codespace.test
+  ```
+  atau menggunakan ip lain selain ini juga bisa , itu sebagai contoh saja untuk merubah domain nya dan jangan lupa di save .
+- Kemudian buka file ```httpd-vhosts.conf``` di direktori ```C:\xampp\apache\conf\extra``` lalu tambah kan kode atau salin kode dibawah ini.
+  ```
+  <VirtualHost 127.0.0.1:80>
+      DocumentRoot "C:/xampp/htdocs/Develompent/codespace/public"
+      ServerName codespace.test
+      ServerAlias www.codespace.test
+  </VirtualHost>
 
-## Learning Laravel
+  <VirtualHost 127.0.0.1:443>
+      DocumentRoot "C:/xampp/htdocs/Develompent/codespace/public"
+      ServerName codespace.test
+      ServerAlias www.codespace.test
+      SSLEngine on
+      SSLCertificateFile "C:/xampp/apache/conf/ssl.crt/server.crt"
+      SSLCertificateKeyFile "C:/xampp/apache/conf/ssl.key/server.key"
+      <Directory "C:/xampp/htdocs/Develompent/codespace/public">
+          Options All
+    	  AllowOverride All
+    	  Require all granted
+      </Directory>
+  </VirtualHost>
+  ```
+  Ip bisa diubah tinggal disesuaikan, untuk contoh itu ip laravel yang biasa memakai ```127.0.0.1``` kemudian untuk ```DocumentRoot "C:/xampp/htdocs/Develompent/codespace/public"``` direktori path nya disesuaikan dengan file anda yang ingin dibuat https. ```Directory "C:/xampp/htdocs/Develompent/codespace/public"``` juga sama tinggal disesuaikan. jika sudah diubah jangan lupa untuk save file nya.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Setelah itu buka aplikasi xampp jika sudah start apache nya kita stop dulu baru start lagi atau di restart apache xampp nya. lalu buka web browser kesayangan anda bisa google chrome, mozila, opera dll dan buka https://localhost atau klo saya buka https://codespace.test maka akan menjadi secure.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
-- [云软科技](http://www.yunruan.ltd/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[source](https://www.iltekkomputer.com/cara-mengaktifkan-https-localhost-xampp-di-windows-menjadi-secure/)
