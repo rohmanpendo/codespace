@@ -68,7 +68,8 @@ class SpaceController extends Controller
      */
     public function show($id)
     {
-        
+        $space = Space::findOrFail($id);
+        return view('pages.space.show', compact('space'));
     }
 
     /**
