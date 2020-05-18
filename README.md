@@ -101,9 +101,9 @@ Course [codepolitan](https://www.codepolitan.com/course/intro/studi-kasus-web-ge
 [source](https://www.iltekkomputer.com/cara-mengaktifkan-https-localhost-xampp-di-windows-menjadi-secure/)
 
 ## Referensi
-[Laravel](https://laravel.com/docs/7.x)
-[Here])(https://developer.here.com/documentation/maps/3.1.15.1/dev_guide/index.html)
-[Fontawesome CDN](https://cdnjs.com/libraries/font-awesome)
-[Laravelcollective](https://laravelcollective.com/docs)
-[Haversine](http://rosettacode.org/wiki/Haversine_formula)
-[Bootstrap](https://getbootstrap.com/docs/4.0/components/carousel)
+- [Laravel](https://laravel.com/docs/7.x)
+- [Here](https://developer.here.com/documentation/maps/3.1.15.1/dev_guide/index.html)
+- [Fontawesome CDN](https://cdnjs.com/libraries/font-awesome)
+- [Laravelcollective](https://laravelcollective.com/docs)
+- [Haversine](http://rosettacode.org/wiki/Haversine_formula)
+- [Bootstrap](https://getbootstrap.com/docs/4.0/components/carousel)
