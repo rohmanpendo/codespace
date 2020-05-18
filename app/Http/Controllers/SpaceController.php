@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 use App\Space;
 
@@ -53,9 +54,24 @@ class SpaceController extends Controller
             'description' => ['required', 'min:10'],
             'latitude' => ['required'],
             'longitude' => ['required'],
+            'photo' => ['required'],
+            'photo.*' => ['mimes:jpeg,png']
         ]);
 
-        $request->user()->spaces()->create($request->all());
+        $space = $request->user()->spaces()->create($request->except('photo'));
+
+
+        $spacePhotos = [];
+
+        foreach ($request->file('photo') as $file) {
+            $path = Storage::disk('public')->putFile('spaces', $file);
+            $spacePhotos[] = [
+                'space_id' => $space->id,
+                'path' => $path
+            ];
+        }
+
+        $space->photos()->insert($spacePhotos);
 
         return redirect()->route('space.index')->with('status', 'Space created!');
     }
@@ -124,6 +140,14 @@ class SpaceController extends Controller
         $space = Space::findOrFail($id);
         if ($space->user_id != request()->user()->id) {
             return redirect()->back();
+        }
+
+        foreach ($space->photos as $photo) {
+            Storage::delete('public/'.$photo->path);
+        }
+
+        foreach ($space->photos as $photo) {
+            Storage::delete('public/'.$photo->path);
         }
 
         $space->delete();
