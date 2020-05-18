@@ -1,3 +1,9 @@
+# Studi Kasus Web Geolocation dengan Laravel dan HERE Maps
+
+Belajar membuat aplikasi web yang terintegrasi dengan API HERE Maps melalui studi kasus pembuatan aplikasi daftar lokasi tempat ngoding yang asyik.
+
+Course [codepolitan](https://www.codepolitan.com/course/intro/studi-kasus-web-geolocation-dengan-laravel-dan-here-maps)
+
 ## Cara membuat local domain dan mengaktifkan https localhost XAMPP di windows 10
 
 - Buka folder instalan xampp biasanya di drive C:\ atau disesuaikan dengan direktori pada saat menginstal
@@ -93,3 +99,11 @@
 - Setelah itu buka aplikasi xampp jika sudah start apache nya kita stop dulu baru start lagi atau di restart apache xampp nya. lalu buka web browser kesayangan anda bisa google chrome, mozila, opera dll dan buka https://localhost atau klo saya buka https://codespace.test maka akan menjadi secure.
 
 [source](https://www.iltekkomputer.com/cara-mengaktifkan-https-localhost-xampp-di-windows-menjadi-secure/)
+
+## Referensi
+[Laravel](https://laravel.com/docs/7.x)
+[Here])(https://developer.here.com/documentation/maps/3.1.15.1/dev_guide/index.html)
+[Fontawesome CDN](https://cdnjs.com/libraries/font-awesome)
+[Laravelcollective](https://laravelcollective.com/docs)
+[Haversine](http://rosettacode.org/wiki/Haversine_formula)
+[Bootstrap](https://getbootstrap.com/docs/4.0/components/carousel)
